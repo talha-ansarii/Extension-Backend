@@ -1,17 +1,21 @@
-import express from "express";
-import cors from "cors";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+
 import clarifyRoute from "./routes/clarify";
 import chatRoute from "./routes/chat";
 
-export const app = express();
+const app = new Hono();
 
+// CORS
 app.use(
+  "*",
   cors({
     origin: "*",
   })
 );
 
-app.use(express.json({ limit: "20kb" }));
+// Routes
+app.route("/clarify", clarifyRoute);
+app.route("/chat", chatRoute);
 
-app.use("/clarify", clarifyRoute);
-app.use("/chat", chatRoute);
+export default app;

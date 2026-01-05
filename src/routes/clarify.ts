@@ -1,26 +1,31 @@
-import { Router } from "express";
+import { Hono } from "hono";
 import { ClarifyRequestSchema } from "../schemas/clarify.schema";
 import { runClarification } from "../services/llm.service";
 
-const router = Router();
+const clarifyRoute = new Hono();
 
-router.post("/", async (req, res) => {
-  const parsed = ClarifyRequestSchema.safeParse(req.body);
+clarifyRoute.post("/", async (c) => {
+  const body = await c.req.json();
+
+  const parsed = ClarifyRequestSchema.safeParse(body);
 
   if (!parsed.success) {
-    return res.status(400).json({
-      error: "Invalid request",
-      details: parsed.error.flatten(),
-    });
+    return c.json(
+      {
+        error: "Invalid request",
+        details: parsed.error.flatten(),
+      },
+      400
+    );
   }
 
   try {
     const answer = await runClarification(parsed.data);
-    res.json({ answer });
+    return c.json({ answer });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Clarification failed" });
+    return c.json({ error: "Clarification failed" }, 500);
   }
 });
 
-export default router;
+export default clarifyRoute;
