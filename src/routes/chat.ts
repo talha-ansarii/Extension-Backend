@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { streamChatResponse } from "../services/llm.service";
-import { ChatMessage, ChatContext } from "../types";
+import { ChatMessage, ChatContext, LLMEnv } from "../types";
 
 const chatRoute = new Hono();
 
@@ -11,7 +11,6 @@ chatRoute.post("/stream", async (c) => {
   }>();
 
   const { messages, context } = body;
-
   // ---------- Validation ----------
   if (
     !Array.isArray(messages) ||
@@ -63,14 +62,14 @@ chatRoute.post("/stream", async (c) => {
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
-
       try {
         await streamChatResponse(
           messages,
           parsedContext,
           async (delta: string) => {
             controller.enqueue(encoder.encode(delta));
-          }
+          },
+          c.env as LLMEnv
         );
       } catch (err) {
         console.error(err);
@@ -85,7 +84,6 @@ chatRoute.post("/stream", async (c) => {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive",
     },
   });
 });

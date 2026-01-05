@@ -1,0 +1,14 @@
+name = "smallgpt-backend"
+compatibility_date = "2026-01-05"
+
+main = "dist/index.js"
+
+[build]
+command = "npm run build"
+
+[observability]
+[observability.logs]
+enabled = false
+head_sampling_rate = 1
+invocation_logs = true
+persist = true

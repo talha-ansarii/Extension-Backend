@@ -4,6 +4,9 @@ export interface ChatMessage {
   role: ChatRole;
   content: string;
 }
+export type LLMEnv = {
+  GEMINI_API_KEY: string;
+};
 
 export type ContentType = "chat" | "article" | "code";
 

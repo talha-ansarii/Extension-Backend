@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { ClarifyRequestSchema } from "../schemas/clarify.schema";
 import { runClarification } from "../services/llm.service";
+import { LLMEnv } from "../types";
 
 const clarifyRoute = new Hono();
 
@@ -20,7 +21,8 @@ clarifyRoute.post("/", async (c) => {
   }
 
   try {
-    const answer = await runClarification(parsed.data);
+    const answer = await runClarification(parsed.data, c.env as LLMEnv);
+
     return c.json({ answer });
   } catch (err) {
     console.error(err);
