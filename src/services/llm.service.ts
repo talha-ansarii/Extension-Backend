@@ -80,7 +80,7 @@ export async function streamChatResponse(
     contents,
     generationConfig: {
       temperature: 0.2,
-      maxOutputTokens: 2000,
+      maxOutputTokens: 5000,
     },
   });
 
