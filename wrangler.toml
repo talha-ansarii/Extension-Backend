@@ -1,4 +1,4 @@
-name = "smallgpt-backend"
+name = "extension-backend"
 compatibility_date = "2026-01-05"
 
 main = "dist/index.js"
